@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FodyUnitTestsLogger", "Fody
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyToProcess", "AssemblyToProcess\AssemblyToProcess.csproj", "{5DD1A9B5-3400-4047-9E9A-41FB2B9DFDE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestsLoggerTests", "UnitTestsLoggerTests\UnitTestsLoggerTests.csproj", "{42171DB8-F957-4F09-900A-2FC811C501D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5DD1A9B5-3400-4047-9E9A-41FB2B9DFDE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DD1A9B5-3400-4047-9E9A-41FB2B9DFDE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DD1A9B5-3400-4047-9E9A-41FB2B9DFDE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42171DB8-F957-4F09-900A-2FC811C501D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42171DB8-F957-4F09-900A-2FC811C501D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42171DB8-F957-4F09-900A-2FC811C501D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42171DB8-F957-4F09-900A-2FC811C501D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -17,41 +17,60 @@ namespace FodyUnitTestsLogger
 
         public void Execute()
         {
-            List<MethodDefinition> testMethods = GetTestMethods();
+            IEnumerable<MethodDefinition> testMethods = GetTestMethods();
 
             foreach (MethodDefinition methodDefinition in testMethods)
             {
-                Collection<Instruction> instructions = methodDefinition.Body.Instructions;
-                
-                MethodReference getCurrentMethodRef = ModuleDefinition.Import(typeof (MethodBase).GetMethod("GetCurrentMethod", new Type []{}));
-                MethodReference writeLineReference = ModuleDefinition.Import(typeof (Console).GetMethod("WriteLine", new Type[] {typeof (object)}));
-
-                Instruction instructionGetCurrentMethod = Instruction.Create(OpCodes.Call, getCurrentMethodRef);                
-                Instruction instructionWriteLine = Instruction.Create(OpCodes.Call, writeLineReference);
-                instructions.Insert(0, instructionGetCurrentMethod);
-                instructions.Insert(1, instructionWriteLine);
+                InjectCodeToMethod(methodDefinition);
             }
         }
-        
-        private List<MethodDefinition> GetTestMethods()
+
+        private void InjectCodeToMethod(MethodDefinition methodDefinition)
         {
-            var res = new List<MethodDefinition>();
+            Collection<Instruction> instructions = methodDefinition.Body.Instructions;
+
+            MethodReference getCurrentMethodRef = GetMethodReference(typeof (MethodBase), "GetCurrentMethod", new Type[] {});
+            MethodReference writeLineReference = GetMethodReference(typeof (Console), "WriteLine", new Type[] {typeof (object)});
+
+            Instruction instructionGetCurrentMethod = Instruction.Create(OpCodes.Call, getCurrentMethodRef);
+            Instruction instructionWriteLine = Instruction.Create(OpCodes.Call, writeLineReference);
+
+            instructions.Insert(0, instructionGetCurrentMethod);
+            instructions.Insert(1, instructionWriteLine);
+        }
+
+        private MethodReference GetMethodReference(Type type, string methodName,  Type[] arguments)
+        {            
+            return ModuleDefinition.Import(type.GetMethod(methodName, arguments));
+        }
+
+        private IEnumerable<MethodDefinition> GetTestMethods()
+        {
+            var testMethods = new List<MethodDefinition>();
 
             foreach (TypeDefinition typeDefinition in ModuleDefinition.Types)
             {                
                 if (IsTestClass(typeDefinition))
                 {
-                    foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
-                    {
-                        if (IsTestMethod(methodDefinition))
-                        {
-                            res.Add(methodDefinition);
-                        }
-                    }                    
+                    testMethods.AddRange(GetTestMethodsFromType(typeDefinition));
                 }
             }
 
-            return res;
+            return testMethods;
+        }
+
+        private IEnumerable<MethodDefinition> GetTestMethodsFromType(TypeDefinition typeDefinition)
+        {
+            var methods = new List<MethodDefinition>();
+            foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
+            {
+                if (IsTestMethod(methodDefinition))
+                {
+                    methods.Add(methodDefinition);
+                }
+            }
+
+            return methods;
         }
 
         private bool IsTestMethod(MethodDefinition methodDefinition)
