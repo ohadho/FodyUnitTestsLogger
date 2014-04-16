@@ -17,9 +17,10 @@ namespace FodyUnitTestsLogger
 
         public void Execute()
         {
-            IEnumerable<MethodDefinition> testMethods = GetTestMethods();
-
-            foreach (MethodDefinition methodDefinition in testMethods)
+            MethodsFinder methodsFinder = new MethodsFinder(ModuleDefinition, "TestFixtureAttribute", "Test");
+            IEnumerable<MethodDefinition> methodDefinitions = methodsFinder.GetMethods();
+            
+            foreach (var methodDefinition in methodDefinitions)
             {
                 InjectCodeToMethod(methodDefinition);
             }
@@ -42,56 +43,6 @@ namespace FodyUnitTestsLogger
         private MethodReference GetMethodReference(Type type, string methodName,  Type[] arguments)
         {            
             return ModuleDefinition.Import(type.GetMethod(methodName, arguments));
-        }
-
-        private IEnumerable<MethodDefinition> GetTestMethods()
-        {
-            var testMethods = new List<MethodDefinition>();
-
-            foreach (TypeDefinition typeDefinition in ModuleDefinition.Types)
-            {                
-                if (IsTestClass(typeDefinition))
-                {
-                    testMethods.AddRange(GetTestMethodsFromType(typeDefinition));
-                }
-            }
-
-            return testMethods;
-        }
-
-        private IEnumerable<MethodDefinition> GetTestMethodsFromType(TypeDefinition typeDefinition)
-        {
-            var methods = new List<MethodDefinition>();
-            foreach (MethodDefinition methodDefinition in typeDefinition.Methods)
-            {
-                if (IsTestMethod(methodDefinition))
-                {
-                    methods.Add(methodDefinition);
-                }
-            }
-
-            return methods;
-        }
-
-        private bool IsTestMethod(MethodDefinition methodDefinition)
-        {
-            if (methodDefinition.CustomAttributes.Any(attribute => attribute.AttributeType.Name.Contains("Test")))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool IsTestClass(TypeDefinition typeDefinition)
-        {
-            IEnumerable<CustomAttribute> attributes = typeDefinition.CustomAttributes.Where(attribute => attribute.AttributeType.FullName.Contains("TestFixtureAttribute"));
-            if (attributes.Any())
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

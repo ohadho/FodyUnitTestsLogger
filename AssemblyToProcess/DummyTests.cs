@@ -9,14 +9,11 @@ using NUnit.Framework;
 namespace AssemblyToProcess
 {
     [TestFixture]
-    public class Tests
+    public class DummyTests
     {
         [Test]
         public void AddTest()
         {
-            //int x = 1;
-//            MethodBase currentMethod = MethodInfo.GetCurrentMethod();
-//            Console.WriteLine(currentMethod);
         }
 
         [Test]
@@ -24,9 +21,8 @@ namespace AssemblyToProcess
         {            
         }
 
-        public void Foo()
-        {
-            
+        public void NotTestMethod()
+        {            
         }
     }
 
